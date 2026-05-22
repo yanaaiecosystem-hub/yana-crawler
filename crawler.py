@@ -6,7 +6,7 @@ import threading
 import requests
 from huggingface_hub import hf_hub_download, list_repo_files
 
-HF_TOKEN = "hf_твой_токен"
+HF_TOKEN = "hf_token"
 DATASET_REPO = "ExtraX0/YAna-SE_data"
 RENDERER_ADD_URLS = "https://ExtraX0-yana-renderer.hf.space/add_urls"
 PING_INTERVAL = 300
