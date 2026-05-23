@@ -1,19 +1,24 @@
 import os
-import json
 import re
 import time
 import threading
 import requests
-from huggingface_hub import hf_hub_download, list_repo_files
+from dotenv import load_dotenv
+from huggingface_hub import HfApi, hf_hub_download, list_repo_files
 
-HF_TOKEN = "hf_token"
+# Загружаем переменные из .env (токен)
+load_dotenv()
+HF_TOKEN = os.getenv("HF_TOKEN")
+if not HF_TOKEN:
+    raise ValueError("HF_TOKEN not found in .env file")
+
 DATASET_REPO = "ExtraX0/YAna-SE_data"
 RENDERER_ADD_URLS = "https://ExtraX0-yana-renderer.hf.space/add_urls"
-PING_INTERVAL = 300
-COLLECT_INTERVAL = 600   # раз в 10 минут собираем ссылки и отправляем
+PING_INTERVAL = 300          # 5 минут
+COLLECT_INTERVAL = 600       # 10 минут
 
 def get_existing_urls():
-    """Возвращает множество URL, уже обработанных (есть в pages/)."""
+    """Возвращает множество URL уже обработанных страниц (из pages/)."""
     api = HfApi()
     files = list_repo_files(repo_id=DATASET_REPO, repo_type="dataset", token=HF_TOKEN)
     page_files = [f for f in files if f.startswith("pages/") and f.endswith(".json")]
@@ -29,6 +34,7 @@ def get_existing_urls():
     return urls
 
 def extract_links_from_text(text: str) -> list:
+    """Извлекает http/https ссылки из plain text."""
     urls = re.findall(r'https?://[^\s<>"\'()]+', text)
     cleaned = []
     for u in urls:
@@ -47,6 +53,7 @@ def send_urls_to_renderer(urls):
         print(f"Failed to send URLs: {e}")
 
 def ping_spaces():
+    # Пингуем
     try:
         requests.get("https://ExtraX0-yana-renderer.hf.space/", timeout=10)
         print("[PING] Renderer OK")
