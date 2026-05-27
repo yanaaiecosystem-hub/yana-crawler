@@ -15,7 +15,7 @@ if not HF_TOKEN:
 DATASET_REPO = "ExtraX0/YAna-SE_data"
 RENDERER_ADD_URLS = "https://ExtraX0-yana-renderer.hf.space/add_urls"
 PING_INTERVAL = 300          # 5 минут
-COLLECT_INTERVAL = 600       # 10 минут
+COLLECT_INTERVAL = 300       # 5 минут
 
 def get_existing_urls():
     """Возвращает множество URL уже обработанных страниц (из pages/)."""
